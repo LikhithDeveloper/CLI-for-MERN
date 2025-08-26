@@ -6,7 +6,7 @@ const { stdout } = require('process');
 
 console.log("Starting setuping MERN stack project...");
 
-if(process.argv.length < 2){
+if(process.argv.length < 3){
     console.log("Please provide the project name");
     process.exit(1);
 }
