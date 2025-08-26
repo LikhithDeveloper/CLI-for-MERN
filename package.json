@@ -1,5 +1,5 @@
 {
-  "name": "create-mern-app",
+  "name": "@likhith_dev/mern-setup",
   "version": "1.0.0",
   "description": "A CLI to bootstrap a MERN project",
   "main": "index.js",
