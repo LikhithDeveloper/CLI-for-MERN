@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // required libraries  
 const { execSync } = require('child_process');
 const fs = require('fs');
