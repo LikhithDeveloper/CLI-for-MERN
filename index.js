@@ -45,26 +45,31 @@ console.log("React client setup done!");
 console.log("Setting up Node/Express server...");
 execSync(`cd ${projectName} && mkdir server`, {stdio: 'ignore'});
 execSync(`cd ${projectName}/server && npm init -y`)
-fs.writeFileSync(
-    `${projectName}/server/package.json`,
-    `
-{
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+const serverPkg = {
+  name: "server",
+  version: "1.0.0",
+  description: "",
+  main: "index.js",
+  scripts: {
+    test: "echo \"Error: no test specified\" && exit 1",
+    start: "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-}
-    `
+  keywords: [],
+  author: "",
+  license: "ISC",
+  type: "commonjs"
+};
+
+fs.writeFileSync(
+  `${projectName}/server/package.json`,
+  JSON.stringify(serverPkg, null, 2) 
 );
-execSync(`cd ${projectName}/server && npm i express && npm i mongoose && npm i cors && npm i dotenv`, {stdio: 'ignore'});
+
+execSync(`npm i express mongoose cors dotenv`, {
+  cwd: `${projectName}/server`,
+  stdio: 'inherit'
+});
+
 fs.writeFileSync(
     `${projectName}/server/.env`,
     `
@@ -106,3 +111,10 @@ app.listen(PORT, () => {
 });
     `
 );
+
+console.log("Node/Express server setup done!");
+console.log("Please follow the steps below to get started:");
+console.log(`1. cd ${projectName}/client && npm run dev (to start React client)`);
+console.log(`2. cd ${projectName}/server && npm start (to start Express server)`);
+console.log("3. Update the .env file in the server folder with your MongoDB connection string before starting the server.");
+console.log("Happy coding!");
