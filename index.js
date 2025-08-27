@@ -1,20 +1,22 @@
 #!/usr/bin/env node
 // required libraries  
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const { stdout } = require('process');
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
+import chalk from "chalk";
 
-console.log("Starting setuping MERN stack project...");
 
+console.log(chalk.cyanBright("Starting setuping MERN stack project...\n"));
 if(process.argv.length < 3){
-    console.log("Please provide the project name");
+    console.log(chalk.red("Please provide the project name"));
     process.exit(1);
 }
 const projectName = process.argv[2] || "MERN_Project";
-execSync(`mkdir ${projectName}`, {stdio: 'inherit'});
-execSync(`cd ${projectName} && npm create vite@latest client -- --template react && cd client && npm install`, {stdio: 'ignore'});
-execSync(`cd ${projectName}/client && npm install tailwindcss @tailwindcss/vite`, {stdio: 'inherit'});
+console.log(chalk.blue("Setting up React client with Vite and TailwindCSS..."));
+try {
+    execSync(`mkdir ${projectName}`, {stdio: 'inherit'});
+    execSync(`cd ${projectName} && npm create vite@latest client -- --template react && cd client && npm install`, {stdio: 'ignore'});
+    execSync(`cd ${projectName}/client && npm install tailwindcss @tailwindcss/vite`, {stdio: 'ignore'});
 fs.writeFileSync(
     `${projectName}/client/vite.config.js`,
     `
@@ -40,11 +42,16 @@ fs.writeFileSync(
   `@import "tailwindcss";\n${styleData}`
 );
 
-console.log("React client setup done!");
+console.log(chalk.green("React client setup done!"));
+} catch (error) {
+    console.error(chalk.red("Error during React client setup:"), error);
+    process.exit(1);
+}
 
-console.log("Setting up Node/Express server...");
-execSync(`cd ${projectName} && mkdir server`, {stdio: 'ignore'});
-execSync(`cd ${projectName}/server && npm init -y`)
+console.log(chalk.blue("Setting up Node/Express server..."));
+try {
+    execSync(`cd ${projectName} && mkdir server`, {stdio: 'ignore'});
+execSync(`cd ${projectName}/server && npm init -y`,{stdio: 'ignore'})
 const serverPkg = {
   name: "server",
   version: "1.0.0",
@@ -67,7 +74,7 @@ fs.writeFileSync(
 
 execSync(`npm i express mongoose cors dotenv`, {
   cwd: `${projectName}/server`,
-  stdio: 'inherit'
+  stdio: 'ignore'
 });
 
 fs.writeFileSync(
@@ -112,9 +119,14 @@ app.listen(PORT, () => {
     `
 );
 
-console.log("Node/Express server setup done!");
-console.log("Please follow the steps below to get started:");
-console.log(`1. cd ${projectName}/client && npm run dev (to start React client)`);
-console.log(`2. cd ${projectName}/server && npm start (to start Express server)`);
-console.log("3. Update the .env file in the server folder with your MongoDB connection string before starting the server.");
-console.log("Happy coding!");
+console.log(chalk.green("Node/Express server setup done!\n"));
+console.log(chalk.cyan("Please follow the steps below to get started:\n"));
+console.log(chalk.yellow(`1. cd ${projectName}/client && npm run dev ${chalk.gray("(to start React client)")}`));
+console.log(chalk.yellow(`2. cd ${projectName}/server && npm start ${chalk.gray("(to start Express server)")}`));
+console.log(chalk.yellow("3. Update the .env file in the server folder with your MongoDB connection string before starting the server.\n"));
+
+console.log(chalk.magentaBright("🎉 Happy coding!"));
+} catch (error) {
+    console.error(chalk.red("Error during Node/Express server setup:"), error);
+    process.exit(1);
+}
